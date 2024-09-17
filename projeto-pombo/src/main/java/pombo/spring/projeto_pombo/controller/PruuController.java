@@ -62,6 +62,18 @@ public class PruuController {
 		List<Pruu> pruus = pruuService.listarTodosPruus();
 		return pruus;
 	}
+	
+	
+	@Operation(summary = "Listar todos os pruus de um usuário", 
+			   description = "Retorna uma lista de todos os pruus de um usuário cadastrado no sistema.",
+			   responses = {
+					@ApiResponse(responseCode = "200", description = "Lista de pruus retornada com sucesso")
+				})
+	@GetMapping(path = "por_usuario/{idUsuario}")
+	public List<Pruu> listarTodosUsuarios(@PathVariable String idUsuario){
+		List<Pruu> pruus = pruuService.listarTodosPruusPorIdUsuario(idUsuario);
+		return pruus;
+	}
 
 	@Operation(summary = "Pesquisar pruu por ID", 
 			   description = "Busca um pruu específico pelo seu ID.")
@@ -85,6 +97,10 @@ public class PruuController {
 		return ResponseEntity.noContent().build();
 	}
 	
-	
+	@Operation(summary = "Bloquear um pru denunciado", description = "Atualiza os dados de um pruu denunciado.")
+	@PutMapping("/bloquear{idPruu}")
+	public ResponseEntity<Pruu> bloquearPruu(@PathVariable String idPruu) throws ProjetoPomboException{
+		return ResponseEntity.ok(pruuService.bloquearPruu(idPruu));
+	}
 
 }

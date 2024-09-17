@@ -6,6 +6,8 @@ import java.util.List;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -43,7 +45,8 @@ public class Pruu {
 	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
 	
-//	@ManyToMany(mappedBy = "pruus_curtidos")
-//	private List<Usuario> usuariosQueCurtiram;
+	@ManyToMany(mappedBy = "pruusCurtidos")
+	@JsonIgnore
+	private List<Usuario> usuariosQueCurtiram;
 
 }

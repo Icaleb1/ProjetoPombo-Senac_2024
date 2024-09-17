@@ -8,6 +8,7 @@ import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.validator.constraints.br.CPF;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -58,13 +59,8 @@ public class Usuario {
 		joinColumns = @JoinColumn(name = "id_usuario"),
 		inverseJoinColumns = @JoinColumn(name = "id_pruu")
 	)
+	@JsonIgnore
 	private List<Pruu> pruusCurtidos;
 	
-//	@OneToOne
-//	@JoinTable(
-//			name = "Usuario_denuncia",
-//			joinColumns = @JoinColumn(name = "id_usuario"),
-//			inverseJoinColumns = @JoinColumn(name = "id_pruu"))
-//	private List<Pruu> prussDenunciados;
-	
+
 }

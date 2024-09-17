@@ -1,5 +1,6 @@
 package pombo.spring.projeto_pombo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -52,14 +53,41 @@ public class UsuarioService {
 			Usuario usuario = usuarioOpt.get();
 			Pruu pruu = pruuOpt.get();
 			
-			pruu.setQuantLikes(pruu.getQuantLikes() + 1); 
-			
-			usuario.getPruusCurtidos().add(pruu);
-			usuarioRepository.save(usuario);
+			if (verificarUsuarioLike(idPruu, idUsuario)) {
+				pruu.setQuantLikes(pruu.getQuantLikes() - 1);
+				usuario.getPruusCurtidos().remove(pruu);
+				usuarioRepository.save(usuario);
+			} else {
+				pruu.setQuantLikes(pruu.getQuantLikes() + 1); 
+				usuario.getPruusCurtidos().add(pruu);
+				usuarioRepository.save(usuario);
+			}
 		} else {
 			throw new RuntimeException("Usuario ou Pruu não encontrados.");
 		}
+	} 
+	
+	public List<Usuario> buscarUsuariosQueCurtiram(String idPruu){
+		Pruu pruuCurtido = pruuRepository.findById(idPruu).get();
 		
+		return new ArrayList<>(pruuCurtido.getUsuariosQueCurtiram());
 	}
+	
+	public boolean verificarUsuarioLike(String idPruu, String idUsuario) {
+	    List<Usuario> usuarios = buscarUsuariosQueCurtiram(idPruu);
+	    Usuario usuarioVerificado = usuarioRepository.findById(idUsuario).orElse(null);
+	    
+	    if (usuarioVerificado == null) {
+	        return false; 
+	    }
+	    
+	    for (Usuario usuario : usuarios) {
+	        if (usuario.equals(usuarioVerificado)) {
+	            return true; 
+	        }
+	    }
+	    return false; 
+	}
+
 	
 }

@@ -76,7 +76,6 @@ public class UsuarioController {
 		return ResponseEntity.ok(usuarioService.atualizarUsuario(usuarioAlterado));
 	}
 	
-	
 	@Operation(summary = "Deletar usuário por ID", description = "Remove um usuário específico pelo seu ID.")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deletarUsuarioPorId(@PathVariable String id){
@@ -91,7 +90,7 @@ public class UsuarioController {
                  @ApiResponse(responseCode = "404", description = "Usuário ou Pruu não encontrado")
              })
 	 @PostMapping("/{idUsuario}/like/{idPruu}")
-	 public ResponseEntity<String> darLike(
+	public ResponseEntity<String> darLike(
 			 @PathVariable String idUsuario,
 			 @PathVariable String idPruu){
 		 try {
@@ -101,6 +100,17 @@ public class UsuarioController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 		}
 	 }
+	 
+	 @Operation(summary = "Listar todos os usuários que curtiram o Pruu", 
+			   description = "Retorna uma lista de todos os usuários que curtiram o Pruu.",
+			   responses = {
+					@ApiResponse(responseCode = "200", description = "Lista de usuários retornada com sucesso")
+				})
+	@GetMapping(path = "/curtiram/{idPruu}")
+	public List<Usuario> buscarUsuariosQueCurtiram(@PathVariable String idPruu){
+		List<Usuario> usuarios = usuarioService.buscarUsuariosQueCurtiram(idPruu);
+		return usuarios;
+	}
 	
 	
 	
