@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -49,4 +50,12 @@ public class Pruu {
 	@JsonIgnore
 	private List<Usuario> usuariosQueCurtiram;
 
+	private boolean ativo;
+	
+	@PrePersist
+    protected void onCreate() {
+        dataHoraCriacao = LocalDateTime.now();
+        ativo = true;
+    }
+	
 }

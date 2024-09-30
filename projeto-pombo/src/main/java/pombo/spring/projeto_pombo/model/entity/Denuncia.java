@@ -1,4 +1,4 @@
-package pombo.spring.projeto_pombo.model.entity;
+ package pombo.spring.projeto_pombo.model.entity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,6 +17,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import pombo.spring.projeto_pombo.model.enumPombo.EnumDenuncia;
 
 @Table
 @Entity
@@ -40,6 +41,9 @@ public class Denuncia {
 
     @Column(name = "usuario_id", nullable = false)
     private String usuarioId;
+    
+    @Column(name = "situacao", nullable = false)
+    private EnumDenuncia situacao;
 	    
     @PrePersist
     protected void onCreate() {

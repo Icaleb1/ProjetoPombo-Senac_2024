@@ -24,8 +24,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import pombo.spring.projeto_pombo.exception.ProjetoPomboException;
+import pombo.spring.projeto_pombo.model.dto.PruuDTO;
 import pombo.spring.projeto_pombo.model.entity.Pruu;
 import pombo.spring.projeto_pombo.model.entity.Usuario;
+import pombo.spring.projeto_pombo.model.seletor.PruuSeletor;
 import pombo.spring.projeto_pombo.service.PruuService;
 
 @RestController
@@ -63,6 +65,12 @@ public class PruuController {
 		return pruus;
 	}
 	
+	@Operation(summary = "Pesquisar pruus com filtros", 
+			   description = "Retorna uma lista de pruus que atendem aos critérios especificados no seletor.")
+	@PostMapping("/filtro")
+	public List<Pruu> pesquisarComSeletor(@RequestBody PruuSeletor seletor) {
+		return pruuService.pesquisarComSeletor(seletor);
+	}
 	
 	@Operation(summary = "Listar todos os pruus de um usuário", 
 			   description = "Retorna uma lista de todos os pruus de um usuário cadastrado no sistema.",
@@ -83,6 +91,14 @@ public class PruuController {
 		return ResponseEntity.ok(pruu);
 	}
 	
+	@Operation(summary = "Gera Relatório de Pruu por ID", 
+			   description = "Gera um relatório de um pruu específico pelo seu ID.")
+	@GetMapping(path = "/relatorio/{idPruu}")
+	public ResponseEntity<PruuDTO> pesquisarRelatorioPruu(@PathVariable String idPruu) throws ProjetoPomboException {
+		PruuDTO dto = pruuService.gerarRelatorioPruu(idPruu);
+		return ResponseEntity.ok(dto);
+	}
+	
 	@Operation(summary = "Atualizar pruu existente", description = "Atualiza os dados de um pruu existente.")
 	@PutMapping
 	public ResponseEntity<Pruu> atualizarPruu(@Valid @RequestBody Pruu pruuAlterado) throws ProjetoPomboException{
@@ -97,10 +113,11 @@ public class PruuController {
 		return ResponseEntity.noContent().build();
 	}
 	
+	
 	@Operation(summary = "Bloquear um pru denunciado", description = "Atualiza os dados de um pruu denunciado.")
-	@PutMapping("/bloquear{idPruu}")
-	public ResponseEntity<Pruu> bloquearPruu(@PathVariable String idPruu) throws ProjetoPomboException{
-		return ResponseEntity.ok(pruuService.bloquearPruu(idPruu));
+	@PutMapping("/{idUsuario}/bloquear/{idPruu}")
+	public ResponseEntity<Pruu> bloquearPruu(@PathVariable String idPruu, @PathVariable String idUsuario) throws ProjetoPomboException{
+		return ResponseEntity.ok(pruuService.bloquearPruu(idPruu, idUsuario));
 	}
 
 }

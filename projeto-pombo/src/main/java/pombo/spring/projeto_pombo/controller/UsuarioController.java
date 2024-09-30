@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -21,6 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import pombo.spring.projeto_pombo.exception.ProjetoPomboException;
 import pombo.spring.projeto_pombo.model.entity.Usuario;
+import pombo.spring.projeto_pombo.model.seletor.UsuarioSeletor;
 import pombo.spring.projeto_pombo.service.UsuarioService;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +48,7 @@ public class UsuarioController {
 					    	 content = @Content(mediaType = "application/json", 
 					    	 examples = @ExampleObject(value = "{\"message\": \"Erro de validação: campo X é obrigatório\", \"status\": 400}")))})
 	@PostMapping
-	public ResponseEntity<Usuario> inserirUsuario(@Valid @RequestBody Usuario novoUsuario) {
+	public ResponseEntity<Usuario> inserirUsuario(@Valid @RequestBody Usuario novoUsuario) throws ProjetoPomboException {
 		Usuario usuarioSalvo = usuarioService.inserirUsuario(novoUsuario);
 		return new ResponseEntity(usuarioSalvo, HttpStatus.CREATED); 
 	}
@@ -62,6 +64,14 @@ public class UsuarioController {
 		return usuarios;
 	}
 
+	@Operation(summary = "Pesquisar usuários com filtros", 
+			   description = "Retorna uma lista de usuários que atendem aos critérios especificados no seletor.")
+	@PostMapping("/filtro")
+	public List<Usuario> pesquisarComSeletor(@RequestBody UsuarioSeletor seletor) {
+		return usuarioService.pesquisarComSeletor(seletor);
+	}
+
+	
 	@Operation(summary = "Pesquisar usuário por ID", 
 			   description = "Busca um usuário específico pelo seu ID.")
 	@GetMapping(path = "/{id}")
@@ -78,7 +88,7 @@ public class UsuarioController {
 	
 	@Operation(summary = "Deletar usuário por ID", description = "Remove um usuário específico pelo seu ID.")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deletarUsuarioPorId(@PathVariable String id){
+	public ResponseEntity<Void> deletarUsuarioPorId(@PathVariable String id) throws ProjetoPomboException{
 		usuarioService.deletarUsuarioPorId(id);
 		return ResponseEntity.noContent().build();
 	}
@@ -92,7 +102,7 @@ public class UsuarioController {
 	 @PostMapping("/{idUsuario}/like/{idPruu}")
 	public ResponseEntity<String> darLike(
 			 @PathVariable String idUsuario,
-			 @PathVariable String idPruu){
+			 @PathVariable String idPruu) throws ProjetoPomboException{
 		 try {
 			 usuarioService.darLike(idUsuario, idPruu);
 			 return ResponseEntity.ok("Like adicionado com sucesso!");

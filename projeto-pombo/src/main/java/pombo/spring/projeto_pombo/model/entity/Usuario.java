@@ -1,6 +1,7 @@
 package pombo.spring.projeto_pombo.model.entity;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -62,5 +64,12 @@ public class Usuario {
 	@JsonIgnore
 	private List<Pruu> pruusCurtidos;
 	
+	private boolean ativo;
+	
+	
+	 @PrePersist
+	    protected void onCreate() {
+	        ativo = true;
+	    }
 
 }
