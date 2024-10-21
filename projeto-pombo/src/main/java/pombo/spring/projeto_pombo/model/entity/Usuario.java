@@ -7,11 +7,18 @@ import java.util.List;
 
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthoritiesContainer;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,11 +34,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import pombo.spring.projeto_pombo.model.enumPombo.EnumPerfilAcesso;
 
 @Entity
 @Table
 @Data
-public class Usuario {
+public class Usuario implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	@UuidGenerator
@@ -44,9 +52,14 @@ public class Usuario {
 	@Email
 	private String email;
 	
+	private String senha;
+	
 	@NotBlank(message = "CPF é obrigatório")
 	@CPF
 	private String cpf;
+	
+	@Enumerated(EnumType.STRING)
+	private EnumPerfilAcesso perfil;
 	
 	@NotNull(message = "É administrador obrigatório")
 	private boolean ehAdmin;
@@ -71,5 +84,29 @@ public class Usuario {
 	    protected void onCreate() {
 	        ativo = true;
 	    }
+
+
+	@Override
+	public java.util.Collection<? extends GrantedAuthority> getAuthorities() {
+		List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+		
+		list.add(new SimpleGrantedAuthority(perfil.toString()));
+		
+		return list;
+	}
+
+
+	@Override
+	public String getPassword() {
+		return this.senha;
+	}
+
+
+	@Override
+	public String getUsername() {
+		return this.email;
+	}
+	 
+
 
 }

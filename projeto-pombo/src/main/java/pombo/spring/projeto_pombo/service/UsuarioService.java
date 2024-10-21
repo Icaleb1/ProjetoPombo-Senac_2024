@@ -10,6 +10,9 @@ import javax.management.RuntimeErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import pombo.spring.projeto_pombo.exception.ProjetoPomboException;
@@ -20,7 +23,7 @@ import pombo.spring.projeto_pombo.model.repository.UsuarioRepository;
 import pombo.spring.projeto_pombo.model.seletor.UsuarioSeletor;
 
 @Service
-public class UsuarioService {
+public class UsuarioService implements UserDetailsService {
 	
 	@Autowired
 	private UsuarioRepository usuarioRepository;
@@ -31,6 +34,14 @@ public class UsuarioService {
 	@Autowired
 	private PruuService pruuService;
 	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+		return usuarioRepository.findByEmail(username)
+				.orElseThrow(
+					() -> new UsernameNotFoundException("Usuário não encontrado" + username));
+	}
+	
 	public Usuario inserirUsuario(Usuario novoUsuario) throws ProjetoPomboException {
 		verificarUsuarioExistente(novoUsuario);
 		return usuarioRepository.save(novoUsuario);
@@ -40,8 +51,8 @@ public class UsuarioService {
 		return usuarioRepository.findAll();
 	}
 	
-	public Usuario pesquisarUsuarioPorId(String id) {
-		return usuarioRepository.findById(id).get();
+	public Usuario pesquisarUsuarioPorId(String id) throws ProjetoPomboException {
+		return usuarioRepository.findById(id).orElseThrow(() -> new ProjetoPomboException("Usuário não encontrado!"));
 	}
 	
 	public Usuario atualizarUsuario(Usuario usuarioAlterado) {
@@ -124,4 +135,6 @@ public class UsuarioService {
 			}
 		}
 	}
+
+	
 }
