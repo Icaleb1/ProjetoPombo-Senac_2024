@@ -3,10 +3,12 @@ package pombo.spring.projeto_pombo.auth;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 import pombo.spring.projeto_pombo.exception.ProjetoPomboException;
 import pombo.spring.projeto_pombo.model.entity.Usuario;
 
+@Service
 public class AuthenticationService {
 	
 	private final JwtService jwtService;
